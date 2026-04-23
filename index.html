@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparse Prime-Exponent Demo</title>
+    <style>
+        body { font-family: system-ui, Arial, sans-serif; margin: 20px; background: #f8f9fa; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1, h2 { color: #1a365d; }
+        .section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        input, button { padding: 8px 12px; margin: 5px; font-size: 16px; }
+        button { background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #1d4ed8; }
+        .number { font-family: monospace; font-size: 1.2em; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; }
+        pre { background: #1e2937; color: #e2e8f0; padding: 15px; border-radius: 6px; overflow-x: auto; }
+        .success { color: #16a34a; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sparse Prime-Exponent Representation Demo</h1>
+        <p><strong>Demo for numbers up to ~2⁶⁰ (using JavaScript BigInt)</strong></p>
+
+        <div class="section">
+            <h2>1. Enter Two Numbers (decimal)</h2>
+            <input type="text" id="num1" value="123456789012345" placeholder="Number 1">
+            <input type="text" id="num2" value="98765432109876" placeholder="Number 2">
+            <button onclick="demoAll()">Run Full Demo</button>
+        </div>
+
+        <div class="section">
+            <h2>2. Sparse Representation</h2>
+            <pre id="rep1">Loading...</pre>
+            <pre id="rep2">Loading...</pre>
+        </div>
+
+        <div class="section">
+            <h2>3. Operations</h2>
+            <button onclick="multiplyDemo()">Multiply (Easy!)</button>
+            <button onclick="addDemo()">Add (Hard!)</button>
+            <button onclick="factorDemo()">Factor New Number</button>
+            <pre id="result" style="margin-top:15px;"></pre>
+        </div>
+
+        <div class="section">
+            <h2>4. Cheat Table (Largest Primes)</h2>
+            <p>Mock table of the largest 8 primes under 2⁶⁰. Used when a huge prime factor appears.</p>
+            <pre id="cheatTable">Loading cheat table...</pre>
+        </div>
+
+        <div class="section">
+            <h2>5. RL Guesser (Mock Neural Net)</h2>
+            <p>Simulates a reinforcement-learning agent proposing trial factors.</p>
+            <button onclick="runRLGuesser()">Run RL Guesser on Random Semiprime</button>
+            <pre id="rlOutput">Click button to run...</pre>
+        </div>
+
+        <div class="section">
+            <h2>Strengths vs Weaknesses</h2>
+            <ul>
+                <li><strong>Strength:</strong> Multiplication = vector addition of exponents (very fast)</li>
+                <li><strong>Strength:</strong> Factorization is stored permanently once encoded</li>
+                <li><strong>Weakness:</strong> Addition requires factoring the sum (expensive)</li>
+                <li><strong>Weakness:</strong> Initial encoding of new numbers needs factorization</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="sparse-demo.js"></script>
+</body>
+</html>
