@@ -121,7 +121,7 @@ function multiplySparse(a, b) {
 }
 
 // Divide sparse A by sparse B (just subtract exponents)
-function multiplySparse(a, b) {
+function divideSparse(a, b) {
     let result = [];
     for (let prime of a) {
         result.push({prime: prime.prime, exp: prime.exp});
