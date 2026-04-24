@@ -120,6 +120,28 @@ function multiplySparse(a, b) {
     return result;
 }
 
+// Divide sparse A by sparse B (just subtract exponents)
+function multiplySparse(a, b) {
+    let result = [];
+    for (let prime of a) {
+        result.push({prime: prime.prime, exp: prime.exp});
+    }
+    for (let bp of b) {
+        for (let i=0; i<result.length; i++) {
+            if (result[i].prime == bp.prime) {
+                result[i].exp -= bp.exp;
+                if (result[i].exp == 0) {
+                    result.splice(i, 1);
+                    i --;
+                }
+            } else {
+                result.push({prime: bp.prime, exp: bp.exp*-1});
+            }
+        } 
+    }
+    return result;
+}
+
 // Converts a sparse representation to BigInt (added by Ckandyckainz)
 function sparseToBigInt(sparse) {
     let bigInt = 1n;
