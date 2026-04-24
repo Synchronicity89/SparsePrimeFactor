@@ -23,6 +23,50 @@ const cheatTable = [
 let currentRep1 = null;
 let currentRep2 = null;
 
+// Add a factor to the sparse list, or increase its exponent if it is already present.
+function addFactor(factors, prime, exp, cheatIndex) {
+    const existing = factors.find((factor) => factor.prime === prime);
+
+    if (existing) {
+        existing.exp += exp;
+        return;
+    }
+
+    const factor = { prime: prime, exp: exp };
+    if (cheatIndex !== undefined) {
+        factor.cheatIndex = cheatIndex;
+    }
+    factors.push(factor);
+}
+
+// Continue trial division until the remaining value is prime.
+// This is slower than a sophisticated factorization algorithm, but it is easy to read
+// and it guarantees a full prime factorization for the demo.
+function factorRemainingByTrialDivision(n, factors) {
+    let divisor = 101n;
+
+    if (divisor % 2n === 0n) {
+        divisor += 1n;
+    }
+
+    while (divisor * divisor <= n) {
+        if (n % divisor === 0n) {
+            let exp = 0;
+            while (n % divisor === 0n) {
+                n /= divisor;
+                exp++;
+            }
+            addFactor(factors, divisor, exp);
+        }
+        divisor += 2n;
+    }
+
+    if (n > 1n) {
+        const cheatIndex = cheatTable.findIndex((prime) => prime === n);
+        addFactor(factors, n, 1, cheatIndex !== -1 ? cheatIndex : undefined);
+    }
+}
+
 // Convert a BigInt to sparse representation: array of {prime: BigInt, exp: number}
 function toSparse(n) {
     if (n === 0n) return [];
@@ -36,19 +80,14 @@ function toSparse(n) {
                 n /= p;
                 exp++;
             }
-            factors.push({prime: p, exp: exp});
+            addFactor(factors, p, exp);
         }
     }
-    
-    // If anything left, treat as "large prime" using cheat table simulation
+
+    // If anything left, keep dividing until we know whether it is prime.
+    // The old code treated every leftover value as prime, which was incorrect.
     if (n > 1n) {
-        // Check if it matches a cheat entry (mock)
-        const matchIndex = cheatTable.findIndex(p => p === n);
-        if (matchIndex !== -1) {
-            factors.push({prime: n, exp: 1, cheatIndex: matchIndex});
-        } else {
-            factors.push({prime: n, exp: 1}); // unknown large prime
-        }
+        factorRemainingByTrialDivision(n, factors);
     }
     return factors;
 }
