@@ -169,7 +169,7 @@ function runRLGuesser() {
     
     // Generate a random semiprime for demo
     const p1 = smallPrimes[Math.floor(Math.random() * smallPrimes.length)];
-    const p2 = smallPrimes[Math.floor(Math.random() * smallPrimes.length) + 10];
+    const p2 = smallPrimes[Math.floor(Math.random() * smallPrimes.length)];
     const semiprime = p1 * p2;
     
     output.textContent += `Target number: ${semiprime}\n`;
