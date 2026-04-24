@@ -122,24 +122,30 @@ function multiplySparse(a, b) {
 
 // Divide sparse A by sparse B (just subtract exponents)
 function divideSparse(a, b) {
-    let result = [];
-    for (let prime of a) {
-        result.push({prime: prime.prime, exp: prime.exp});
+    const result = [];
+    for (let factor of a) {
+        result.push({ prime: factor.prime, exp: factor.exp, cheatIndex: factor.cheatIndex });
     }
-    for (let bp of b) {
-        for (let i=0; i<result.length; i++) {
-            if (result[i].prime == bp.prime) {
-                result[i].exp -= bp.exp;
-                if (result[i].exp == 0) {
-                    result.splice(i, 1);
-                    i --;
-                }
-            } else {
-                result.push({prime: bp.prime, exp: bp.exp*-1});
+
+    for (let factor of b) {
+        const existing = result.find((entry) => entry.prime === factor.prime);
+
+        if (existing) {
+            existing.exp -= factor.exp;
+            if (existing.exp === 0) {
+                const existingIndex = result.indexOf(existing);
+                result.splice(existingIndex, 1);
             }
-        } 
+        } else {
+            result.push({ prime: factor.prime, exp: -factor.exp, cheatIndex: factor.cheatIndex });
+        }
     }
+
     return result;
+}
+
+function hasNegativeExponent(sparse) {
+    return sparse.some((factor) => factor.exp < 0);
 }
 
 // Converts a sparse representation to BigInt (added by Ckandyckainz)
@@ -187,6 +193,28 @@ function multiplyDemo() {
     resultEl.innerHTML = `
         <strong>Multiplication:</strong> trivial vector addition<br>
         Result sparse: ${formatSparse(productRep)}
+    `;
+}
+
+// Divide demo
+function divideDemo() {
+    if (!currentRep1 || !currentRep2) {
+        alert("First run full demo with two numbers");
+        return;
+    }
+
+    const quotientRep = divideSparse(currentRep1, currentRep2);
+    const resultEl = document.getElementById("result");
+    const exactDivision = !hasNegativeExponent(quotientRep);
+
+    resultEl.innerHTML = `
+        <strong>Division:</strong> subtract the exponent vectors<br>
+        Result sparse: ${formatSparse(quotientRep)}<br>
+        <span class="${exactDivision ? "success" : "error"}">
+            ${exactDivision
+                ? "All exponents stayed non-negative, so the quotient is an integer."
+                : "Some exponents became negative, so this represents a rational value rather than a whole integer."}
+        </span>
     `;
 }
 
