@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive SQL Tutorial</title>
+    <style>
+        :root {
+            --ink: #10233c;
+            --sky: #dff2ff;
+            --paper: #fffdf8;
+            --panel: rgba(255, 255, 255, 0.9);
+            --line: #bed3e6;
+            --accent: #0b7285;
+            --accent-strong: #0f4c5c;
+            --good: #1c7c54;
+            --warn: #b76e00;
+            --bad: #b42318;
+            --code-bg: #0f172a;
+            --code-ink: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(11, 114, 133, 0.15), transparent 28%),
+                radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), transparent 24%),
+                linear-gradient(180deg, #f6fbff 0%, #eef6ff 42%, #fffaf0 100%);
+        }
+
+        a {
+            color: var(--accent-strong);
+        }
+
+        .page {
+            width: min(1200px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 24px 0 48px;
+        }
+
+        .hero,
+        .panel {
+            background: var(--panel);
+            border: 1px solid rgba(190, 211, 230, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 18px 45px rgba(16, 35, 60, 0.08);
+        }
+
+        .hero {
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            margin: 0 0 12px;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            line-height: 1.05;
+        }
+
+        .hero p {
+            max-width: 70ch;
+            font-size: 1.06rem;
+            line-height: 1.6;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .note {
+            padding: 16px;
+            background: var(--sky);
+            border-radius: 16px;
+            border: 1px solid rgba(11, 114, 133, 0.15);
+        }
+
+        .note h2,
+        .panel h2,
+        .panel h3 {
+            margin-top: 0;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            padding: 20px;
+        }
+
+        .step-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .step-button {
+            width: 100%;
+            text-align: left;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: #ffffff;
+            color: var(--ink);
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .step-button.active {
+            background: #e7f6f4;
+            border-color: rgba(11, 114, 133, 0.45);
+            box-shadow: inset 0 0 0 1px rgba(11, 114, 133, 0.25);
+        }
+
+        .step-button.completed {
+            background: #f3fcf7;
+            border-color: rgba(28, 124, 84, 0.35);
+        }
+
+        .step-button small {
+            display: block;
+            color: #50657f;
+            margin-top: 4px;
+        }
+
+        .status-line {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #f5f9fd;
+            border: 1px solid var(--line);
+        }
+
+        .status-line.good {
+            color: var(--good);
+            border-color: rgba(28, 124, 84, 0.3);
+            background: rgba(28, 124, 84, 0.08);
+        }
+
+        .status-line.warn {
+            color: var(--warn);
+            border-color: rgba(183, 110, 0, 0.3);
+            background: rgba(183, 110, 0, 0.08);
+        }
+
+        .status-line.bad {
+            color: var(--bad);
+            border-color: rgba(180, 35, 24, 0.3);
+            background: rgba(180, 35, 24, 0.08);
+        }
+
+        .progress-card {
+            margin-bottom: 14px;
+            padding: 14px;
+            border-radius: 14px;
+            background: #f7fbff;
+            border: 1px solid var(--line);
+        }
+
+        .progress-bar {
+            height: 12px;
+            border-radius: 999px;
+            background: #e3edf6;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #1c7c54 0%, #0b7285 100%);
+            transition: width 180ms ease;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .meta-card {
+            padding: 14px;
+            border-radius: 14px;
+            background: #f7fbff;
+            border: 1px solid var(--line);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 260px;
+            resize: vertical;
+            border-radius: 16px;
+            border: 1px solid rgba(15, 76, 92, 0.2);
+            padding: 16px;
+            font: 15px/1.5 Consolas, "Courier New", monospace;
+            background: #fffefb;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 14px 0 18px;
+        }
+
+        button {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font: inherit;
+            background: var(--accent);
+            color: white;
+        }
+
+        button.secondary {
+            background: #d8ecf0;
+            color: var(--accent-strong);
+        }
+
+        button.ghost {
+            background: #f5f9fd;
+            color: var(--ink);
+            border: 1px solid var(--line);
+        }
+
+        .result-block {
+            margin-top: 16px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: white;
+            margin-bottom: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e8eef5;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #edf6fb;
+        }
+
+        pre {
+            margin: 0;
+            padding: 16px;
+            overflow-x: auto;
+            border-radius: 16px;
+            background: var(--code-bg);
+            color: var(--code-ink);
+            font: 14px/1.5 Consolas, "Courier New", monospace;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 920px) {
+            .hero-grid,
+            .layout,
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="hero">
+            <div class="hero-grid">
+                <div>
+                    <h1>Interactive SQL Tutorial</h1>
+                    <p>
+                        This page runs SQLite entirely inside your browser. You can write SQL, run it from JavaScript,
+                        inspect the result sets, and then check whether your query or data change matches the exercise.
+                    </p>
+                    <p>
+                        The only external dependency is <strong>sql.js</strong>, loaded from a CDN. Everything else on this page is plain HTML, CSS, and readable JavaScript.
+                    </p>
+                </div>
+                <aside class="note">
+                    <h2>Important Join Note</h2>
+                    <p>
+                        You cannot move a <code>JOIN</code> clause before <code>FROM</code> in SQL syntax.
+                        What <em>is</em> often true is that <strong>inner joins</strong> can be written in different table orders
+                        and still return the same rows if you preserve the same join conditions.
+                    </p>
+                    <p>
+                        That does <strong>not</strong> hold in general for outer joins such as <code>LEFT JOIN</code>.
+                        One of the exercises below has you reorder inner joins and confirm that the result set stays the same.
+                    </p>
+                </aside>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Back to the sparse prime demo</a>
+                <a href="sql-aggregates.html">Continue to tutorial 2: aggregate SQL</a>
+            </div>
+        </section>
+
+        <div class="layout">
+            <aside class="panel">
+                <h2>Exercises</h2>
+                <div class="progress-card">
+                    <strong id="progressSummary">0 of 7 exercises completed</strong>
+                    <div class="progress-bar" aria-hidden="true">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div id="stepList" class="step-list"></div>
+                <div id="statusLine" class="status-line">Loading SQL engine...</div>
+            </aside>
+
+            <main class="panel">
+                <div class="meta-grid">
+                    <section class="meta-card">
+                        <h2 id="stepTitle">Loading...</h2>
+                        <p id="stepObjective"></p>
+                    </section>
+                    <section class="meta-card">
+                        <h2>Why This Matters</h2>
+                        <p id="stepConcept"></p>
+                    </section>
+                </div>
+
+                <section class="meta-card" style="margin-bottom: 18px;">
+                    <h3>Exercise Details</h3>
+                    <p id="stepInstructions"></p>
+                </section>
+
+                <label for="sqlEditor"><strong>SQL editor</strong></label>
+                <textarea id="sqlEditor" spellcheck="false"></textarea>
+
+                <div class="actions">
+                    <button id="loadStarterButton" type="button">Load starter SQL</button>
+                    <button id="runSqlButton" type="button">Run SQL</button>
+                    <button id="checkStepButton" type="button">Check exercise</button>
+                    <button id="nextStepButton" type="button" class="secondary">Next exercise</button>
+                    <button id="resetDbButton" type="button" class="ghost">Reset database</button>
+                </div>
+
+                <section class="result-block">
+                    <h3>Result sets</h3>
+                    <div id="resultArea"></div>
+                </section>
+
+                <section class="result-block">
+                    <h3>Execution log</h3>
+                    <pre id="logArea">No SQL has run yet.</pre>
+                </section>
+
+                <section class="result-block meta-card">
+                    <h3>Free Practice</h3>
+                    <p>
+                        Use the same editor and the same in-memory database to write your own queries after you finish the guided exercises.
+                    </p>
+                    <p>
+                        Try these prompts: list every order with its line count, find customers with no orders, or compare shipped quantity to ordered quantity for each line item.
+                    </p>
+                    <p>
+                        When you want the next topic, move to <a href="sql-aggregates.html">SQL Tutorial 2</a> for aggregate functions.
+                    </p>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+    <script src="sql-tutorial.js"></script>
+</body>
+</html>

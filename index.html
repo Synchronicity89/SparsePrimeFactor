@@ -9,6 +9,10 @@
         .container { max-width: 1100px; margin: 0 auto; }
         h1, h2 { color: #1a365d; }
         .section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .path-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
+        .path-card { border: 1px solid #dbe4f0; border-radius: 8px; padding: 16px; background: #f8fbff; }
+        .path-card h3 { margin-top: 0; color: #1d4ed8; }
+        .path-card p { margin-bottom: 10px; }
         input, button { padding: 8px 12px; margin: 5px; font-size: 16px; }
         button { background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; }
         button:hover { background: #1d4ed8; }
@@ -22,6 +26,26 @@
     <div class="container">
         <h1>Sparse Prime-Exponent Representation Demo</h1>
         <p><strong>Demo for numbers up to ~2⁶⁰ (using JavaScript BigInt)</strong></p>
+
+        <div class="section">
+            <h2>SQL Learning Path</h2>
+            <p>
+                This site now includes a two-part browser SQL tutorial alongside the sparse prime demo.
+                Start with the first page for table creation, inserts, deletes, and joins, then continue to the second page for grouped summary queries.
+            </p>
+            <div class="path-grid">
+                <div class="path-card">
+                    <h3>Step 1: Core SQL</h3>
+                    <p>Learn `CREATE TABLE`, `INSERT`, `DELETE`, parent-child relationships, multi-column joins, and inner-join reordering.</p>
+                    <p><a href="sql-tutorial.html">Open SQL Tutorial 1</a></p>
+                </div>
+                <div class="path-card">
+                    <h3>Step 2: Aggregate SQL</h3>
+                    <p>Continue with `COUNT`, `SUM`, `AVG`, `GROUP BY`, and `HAVING` using the same sample order data.</p>
+                    <p><a href="sql-aggregates.html">Open SQL Tutorial 2</a></p>
+                </div>
+            </div>
+        </div>
 
         <div class="section">
             <h2>1. Enter Two Numbers (decimal)</h2>
@@ -55,6 +79,13 @@
             <p>Simulates a reinforcement-learning agent proposing trial factors.</p>
             <button onclick="runRLGuesser()">Run RL Guesser on Random Semiprime</button>
             <pre id="rlOutput">Click button to run...</pre>
+        </div>
+
+        <div class="section">
+            <h2>6. Interactive SQL Tutorial</h2>
+            <p>Practice SQL in the browser with guided exercises that create tables, insert rows, delete data, build joins, and then move on to aggregate queries.</p>
+            <p><a href="sql-tutorial.html">Open SQL Tutorial 1: Tables, data changes, and joins</a></p>
+            <p><a href="sql-aggregates.html">Open SQL Tutorial 2: COUNT, SUM, GROUP BY, and HAVING</a></p>
         </div>
 
         <div class="section">
