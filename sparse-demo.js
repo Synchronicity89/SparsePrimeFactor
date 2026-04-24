@@ -105,7 +105,10 @@ function formatSparse(rep) {
 
 // Multiply two sparse representations (just add exponents)
 function multiplySparse(a, b) {
-    const result = [...a];
+    let result = [];
+    for (let prime of a) {
+        result.push({prime: prime.prime, exp: prime.exp});
+    }
     for (let fb of b) {
         const existing = result.find(f => f.prime === fb.prime);
         if (existing) {
