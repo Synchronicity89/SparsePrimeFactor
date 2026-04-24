@@ -117,10 +117,23 @@ function multiplySparse(a, b) {
     return result;
 }
 
+// Converts a sparse representation to BigInt (added by Ckandyckainz)
+function sparseToBigInt(sparse) {
+    let bigInt = 1n;
+    for (let factor of sparse) {
+        for (let i=0; i<factor.exp; i++) {
+            bigInt *= factor.prime;
+        }
+    }
+    return bigInt;
+}
+
 // Simple demo of addition (shows weakness)
+// "Addition requires full factorization of the sum → expensive!"
 function addSparse(a, b) {
-    // In real system we would convert to integer, add, then refactor
-    return "Addition requires full factorization of the sum → expensive!";
+    // Actually functional code added by Ckandyckainz:
+    const sum = sparseToBigInt(a)+sparseToBigInt(b);
+    return toSparse(sum);
 }
 
 // Main demo runner
