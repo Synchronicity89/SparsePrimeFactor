@@ -170,7 +170,7 @@ function addDemo() {
     const resultEl = document.getElementById("result");
     resultEl.innerHTML = `
         <strong>Addition attempt:</strong><br>
-        ${addSparse(currentRep1 || [], currentRep2 || [])}
+        ${formatSparse(addSparse(currentRep1 || [], currentRep2 || []))}
         <br><span class="error">This is the main weakness of the system.</span>
     `;
 }
